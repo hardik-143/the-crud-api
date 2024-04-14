@@ -49,31 +49,36 @@ Create a new todo.
 
 To create a new todo, send a POST request to the `/todos` endpoint with the following request body:
 
+```
 {
     "todo": "Todo Title",
     "created_by": "YOUR NAME",
     "password" : "YOUR PASSWORD",
 }
-
-```bash
-Note: Please remember your password. It is crucial for creating new todos and modify existing ones.
 ```
+
+**Note**: Please remember your password. It is crucial for creating new todos and modify existing ones.
+
 
 ### PUT /todos/:id
 Update an existing todo.
 
 To update an existing todo, send a PUT request to the `/todos/:id` endpoint with the following request body:
 
+```
 {
     "todo": "Updated Todo Title",
     "password" : "YOUR PASSWORD"
 }
+```
 
 ### DELETE /todos/:id
 Delete an existing todo.
 
 To delete an existing todo, send a DELETE request to the `/todos/:id` endpoint with the following request body:
 
+```
 {
     "password" : "YOUR PASSWORD",
 }
+```
