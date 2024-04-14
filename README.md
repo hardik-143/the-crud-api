@@ -32,9 +32,9 @@ Before running the API, make sure you have the following installed:
 
 To start the API, run the following command:
 
-    ```bash
-    npm install
-    ```
+```bash
+npm install
+```
 
 ## Routes 
 
@@ -56,7 +56,7 @@ To create a new todo, send a POST request to the `/todos` endpoint with the foll
 }
 
 ```bash
-$${\color{red} \text{Note: Please remember your password. It is crucial for creating new todos and modify existing ones.}}$$
+Note: Please remember your password. It is crucial for creating new todos and modify existing ones.
 ```
 
 ### PUT /todos/:id
