@@ -5,7 +5,7 @@ import bodyParser from 'body-parser';
 import { DATABASEURL,PORT } from './config.js';
 const app = express();
 
-const url = DATABASEURL || "mongodb://localhost:27017/your-database-name";
+const url = DATABASEURL || "mongodb://localhost:27017/tododb";
 mongoose.connect(url, { useNewUrlParser: true });
 const con = mongoose.connection;
 
