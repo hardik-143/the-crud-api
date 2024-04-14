@@ -32,6 +32,6 @@ Before running the API, make sure you have the following installed:
 
 To start the API, run the following command:
 
-    ```base
+    ```bash
     npm install
     ```
