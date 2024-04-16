@@ -1,5 +1,5 @@
 import Todo from "../Model/tododata.js";
-import bcrypt from "bcrypt";
+import bcrypt from "bcryptjs";
 const addTodo = (req, res) => {
   const { todo, created_by, password } = req.body;
   const todoExists = Todo.findOne({ todo: todo, created_by: created_by });
