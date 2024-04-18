@@ -31,8 +31,8 @@ app.use((req, res, next) => {
 
 // limit incoming request from same IP
 const limiter = rateLimit({
-    windowMs: 1 * 60 * 1000, // 1 minutes
-    max: 10, // limit each IP to 100 requests per windowMs
+    windowMs: 60 * 60 * 1000, // 1 hour window
+    max: 100, // start blocking after 100 requests
 });
 app.use(limiter); //  apply to all requests
 

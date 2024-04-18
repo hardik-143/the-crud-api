@@ -183,6 +183,33 @@ Here are some examples of using the API with `curl`:
     &nbsp;
     Replace `:id` with the ID of the todo.
 
+## Live
+
+The API is live at [https://the-crud-api.herokuapp.com/](https://the-crud-api.herokuapp.com/)
+
+## Rate Limiting
+
+The API has rate limiting enabled to prevent abuse. The rate limit is set to 100 requests per hour. If you exceed the rate limit, you will receive a `429 Too Many Requests` response.
+
+## Rate Limiting Example
+
+Here is an example of the rate limiting response:
+
+```bash
+HTTP/1.1 429 Too Many Requests
+X-RateLimit-Limit: 100
+X-RateLimit-Remaining: 0
+X-RateLimit-Reset: 3600
+Content-Type: application/json
+Content-Length: 35
+Date: Thu, 01 Jul 2021 12:00:00 GMT
+
+{
+    "message": "Rate limit exceeded"
+}
+```
+
+
 ## Response Headers
 
 The API returns the following headers in the response:
