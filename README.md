@@ -185,7 +185,7 @@ Here are some examples of using the API with `curl`:
 
 ## Live
 
-The API is live at [https://the-crud-api.vercel.app/todos](https://the-crud-api.vercel.app/todos)
+The API is live at [https://the-crud-api.vercel.app](https://the-crud-api.vercel.app)
 
 ## Rate Limiting
 
