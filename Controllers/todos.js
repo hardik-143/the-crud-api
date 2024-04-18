@@ -1,59 +1,54 @@
-import {
-  removePrivateKeyFromSingleObject,
-  removePrivateKeys,
-} from "../Helpers/common.js";
-import { publicKeysForTodo } from "../Helpers/utils.js";
+
 import Todo from "../Model/tododata.js";
 import bcrypt from "bcryptjs";
+import { statusCode } from "../statusCode.js";
 const addTodo = (req, res) => {
   const { todo, created_by, password } = req.body;
-  const todoExists = Todo.findOne({ todo: todo, created_by: created_by });
+  // const todoExists = Todo.findOne({ todo: todo, created_by: created_by });
+  const todoExists = Todo.checkDuplicateTodo(todo,created_by);
   todoExists.then((result) => {
     if (result) {
       return res
-        .status(400)
+        .status(statusCode.BAD_REQUEST)
         .json({ error: "Todo already exists with this user" });
     } else {
-      let encrtptedPassword = bcrypt.hashSync(password, 10);
+
       const newTodo = new Todo({
         ...req.body,
-        password: encrtptedPassword,
       });
       newTodo
         .save()
         .then((result) => {
-          return res.status(201).json(result);
+          return res.status(statusCode.CREATED).json(result);
         })
         .catch((error) => {
-          return res.status(500).json({ error: error.message });
+          return res.status(statusCode.INTERNAL_SERVER_ERROR).json({ error: error.message });
         });
     }
   });
 };
 
 const getTodos = (req, res) => {
-  const todo = Todo.find({}, { _id: 0, __v: 0, password: 0 }).select(
-    publicKeysForTodo
-  );
+  const todo = Todo.find()
 
   todo
     .then((result) => {
-      return res.status(200).json(result);
+      return res.status(statusCode.OK).json(result);
     })
     .catch((error) => {
-      return res.status(500).json({ error: error.message });
+      return res.status(statusCode.INTERNAL_SERVER_ERROR).json({ error: error.message });
     });
 };
 
 const getSpecificTodo = (req, res) => {
   const { id } = req.params;
-  const todo = Todo.findOne({ id: id },{ _id: 0, __v: 0, password: 0 }).select(publicKeysForTodo);
+  const todo = Todo.findOne({ id: id })
   todo
     .then((result) => {
-      return res.status(200).json(removePrivateKeyFromSingleObject(result));
+      return res.status(statusCode.OK).json(result);
     })
     .catch((error) => {
-      return res.status(500).json({ error: error.message });
+      return res.status(statusCode.INTERNAL_SERVER_ERROR).json({ error: error.message });
     });
 };
 
@@ -84,10 +79,10 @@ const updateTodo = (req, res) => {
           );
           todo
             .then((result) => {
-              return res.status(200).json(result);
+              return res.status(statusCode.OK).json(result);
             })
             .catch((error) => {
-              return res.status(500).json({ error: error.message });
+              return res.status(statusCode.INTERNAL_SERVER_ERROR).json({ error: error.message });
             });
         } else {
           return res.status(400).json({ error: "Password is incorrect" });
@@ -97,7 +92,7 @@ const updateTodo = (req, res) => {
       }
     })
     .catch((error) => {
-      return res.status(500).json({ error: error.message });
+      return res.status(statusCode.INTERNAL_SERVER_ERROR).json({ error: error.message });
     });
 };
 
@@ -117,10 +112,10 @@ const deleteTodo = (req, res) => {
           const todo = Todo.findOneAndDelete({ id: id });
           todo
             .then((result) => {
-              return res.status(200).json(result);
+              return res.status(statusCode.OK).json(result);
             })
             .catch((error) => {
-              return res.status(500).json({ error: error.message });
+              return res.status(statusCode.INTERNAL_SERVER_ERROR).json({ error: error.message });
             });
         } else {
           return res.status(400).json({ error: "Password is incorrect" });
@@ -130,7 +125,7 @@ const deleteTodo = (req, res) => {
       }
     })
     .catch((error) => {
-      return res.status(500).json({ error: error.message });
+      return res.status(statusCode.INTERNAL_SERVER_ERROR).json({ error: error.message });
     });
 };
 

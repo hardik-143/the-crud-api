@@ -2,7 +2,8 @@ import express from 'express';
 import mongoose from 'mongoose';
 import todoRouter from './Routes/todos/index.js';
 import bodyParser from 'body-parser';
-import { DATABASEURL,PORT } from './config.js';
+import {DATABASEURL,PORT} from './config.js';
+import { rateLimit } from "express-rate-limit";
 const app = express();
 
 const url = DATABASEURL || "mongodb://localhost:27017/tododb";
@@ -16,6 +17,25 @@ try {
 } catch (error) {
     console.log("Error: " + error);
 }
+
+
+app.use((req, res, next) => {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader(
+        'Access-Control-Allow-Headers',
+        'Origin, X-Requested-With, Content-Type, Accept, Authorization'
+    );
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PATCH, DELETE');
+    next();
+});
+
+// limit incoming request from same IP
+const limiter = rateLimit({
+    windowMs: 1 * 60 * 1000, // 1 minutes
+    max: 10, // limit each IP to 100 requests per windowMs
+});
+app.use(limiter); //  apply to all requests
+
 
 app.use(express.json());
 app.use(bodyParser.json());
