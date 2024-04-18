@@ -1,3 +1,8 @@
+import {
+  removePrivateKeyFromSingleObject,
+  removePrivateKeys,
+} from "../Helpers/common.js";
+import { publicKeysForTodo } from "../Helpers/utils.js";
 import Todo from "../Model/tododata.js";
 import bcrypt from "bcryptjs";
 const addTodo = (req, res) => {
@@ -27,7 +32,9 @@ const addTodo = (req, res) => {
 };
 
 const getTodos = (req, res) => {
-  const todo = Todo.find();
+  const todo = Todo.find({}, { _id: 0, __v: 0, password: 0 }).select(
+    publicKeysForTodo
+  );
 
   todo
     .then((result) => {
@@ -40,10 +47,10 @@ const getTodos = (req, res) => {
 
 const getSpecificTodo = (req, res) => {
   const { id } = req.params;
-  const todo = Todo.findOne({ id: id });
+  const todo = Todo.findOne({ id: id },{ _id: 0, __v: 0, password: 0 }).select(publicKeysForTodo);
   todo
     .then((result) => {
-      return res.status(200).json(result);
+      return res.status(200).json(removePrivateKeyFromSingleObject(result));
     })
     .catch((error) => {
       return res.status(500).json({ error: error.message });
@@ -52,13 +59,13 @@ const getSpecificTodo = (req, res) => {
 
 const updateTodo = (req, res) => {
   const { id } = req.params;
-  const {password,todo}  = req.body;
+  const { password, todo } = req.body;
   const data = {
     todo: todo,
     updated_at: new Date(),
-  }
+  };
   const existingTodo = Todo.findOne({ id: id });
-  if(!password){
+  if (!password) {
     return res.status(400).json({ error: "Password is required" });
   }
   existingTodo
@@ -96,14 +103,14 @@ const updateTodo = (req, res) => {
 
 const deleteTodo = (req, res) => {
   const { id } = req.params;
-  const {password} = req.body;
+  const { password } = req.body;
   const todo = Todo.findOne({ id: id });
-  if(!password){
+  if (!password) {
     return res.status(400).json({ error: "Password is required" });
   }
   todo
     .then((result) => {
-        console.log(result);
+      console.log(result);
       if (result) {
         const isMatch = bcrypt.compareSync(password, result.password);
         if (isMatch) {
