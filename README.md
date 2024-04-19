@@ -105,6 +105,20 @@ a simple CRUD API for managing your todos.
 | `PUT`    | `/todos/:id`   | Update an existing todo |
 | `DELETE` | `/todos/:id`   | Delete an existing todo |
 
+## Request Parameters
+
+| Parameter  | Type   | Description               |
+|------------|--------|---------------------------|
+| `user`     | string | The name of the user      |
+| `max`      | number | The maximum number of todos to return |
+| `page`     | number | The page number of the results |
+| `limit`    | number | The number of todos to return per page |
+
+**Note**: 
+- The `max`, `page`, and `limit` parameters are optional.
+- Prefer using the `page` and `limit` parameters for pagination.
+- The `max` parameter will override the `page` and `limit` parameters.
+
 ## API Documentation
 
 Request examples for creating, updating, and deleting todos:
@@ -186,6 +200,14 @@ Here are some examples of using the API with `curl`:
 ## Live
 
 The API is live at [https://the-crud-api.vercel.app](https://the-crud-api.vercel.app)
+
+## When to use the API
+
+- When you need a simple CRUD API for managing todos.
+- When you need to create, read, update, and delete todos.
+- When you need a secure API with password protection.
+- When you need a rate-limited API to prevent abuse.
+- When you need a CORS-protected API.
 
 ## Rate Limiting
 

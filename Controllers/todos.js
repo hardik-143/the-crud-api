@@ -1,54 +1,99 @@
-
 import Todo from "../Model/tododata.js";
 import bcrypt from "bcryptjs";
 import { statusCode } from "../statusCode.js";
 const addTodo = (req, res) => {
   const { todo, created_by, password } = req.body;
   // const todoExists = Todo.findOne({ todo: todo, created_by: created_by });
-  const todoExists = Todo.checkDuplicateTodo(todo,created_by);
+  const todoExists = Todo.checkDuplicateTodo(todo, created_by);
   todoExists.then((result) => {
     if (result) {
       return res
         .status(statusCode.BAD_REQUEST)
         .json({ error: "Todo already exists with this user" });
     } else {
-
       const newTodo = new Todo({
         ...req.body,
       });
       newTodo
         .save()
         .then((result) => {
-          return res.status(statusCode.CREATED).json(result);
+          const data = {
+            data: result,
+            message: "Todo added successfully",
+          };
+          return res.status(statusCode.CREATED).json(data);
         })
         .catch((error) => {
-          return res.status(statusCode.INTERNAL_SERVER_ERROR).json({ error: error.message });
+          return res
+            .status(statusCode.INTERNAL_SERVER_ERROR)
+            .json({ error: error.message });
         });
     }
   });
 };
 
 const getTodos = (req, res) => {
-  const todo = Todo.find()
+  const todo = Todo.find();
+  const params = req.query;
+  if (params.user) {
+    todo.where({ created_by: params.user });
+  }
+  if (params.max) {
+    if (parseInt(params.max) > 100) {
+      return res
+        .status(statusCode.BAD_REQUEST)
+        .json({ error: "Cannot fetch more than 100 todos" });
+    }
+    todo.limit(parseInt(params.max));
+  } else {
+    let page = parseInt(params.page) || 1;
+    let limit = 10; // number of records per page
+    if(params.limit){
+      if(parseInt(params.limit) > 100){
+        return res
+        .status(statusCode.BAD_REQUEST)
+        .json({ error: "Cannot fetch more than 100 todos" });
+      }
+      limit = parseInt(params.limit);
+    }
+    let skip = (page - 1) * limit;
+    todo.limit(limit).skip(skip);
+  }
 
   todo
     .then((result) => {
-      return res.status(statusCode.OK).json(result);
+      const data = {
+        count: result.length,
+        data: result,
+        message:
+          result.length > 0 ? "Todos fetched successfully" : "No todos found",
+        page: page,
+      };
+      return res.status(statusCode.OK).json(data);
     })
     .catch((error) => {
-      return res.status(statusCode.INTERNAL_SERVER_ERROR).json({ error: error.message });
+      return res
+        .status(statusCode.INTERNAL_SERVER_ERROR)
+        .json({ error: error.message });
     });
 };
 
 const getSpecificTodo = (req, res) => {
   const { id } = req.params;
-  const todo = Todo.findOne({ id: id })
+  const todo = Todo.findOne({ id: id });
   todo
     .then((result) => {
-      return res.status(statusCode.OK).json(result);
+      const data = {
+        count: result.length,
+        data: result,
+        message: "Todo fetched successfully",
+      };
+      return res.status(statusCode.OK).json(data);
     })
     .catch((error) => {
-      return res.status(statusCode.INTERNAL_SERVER_ERROR).json({ error: error.message });
+      return res
+        .status(statusCode.INTERNAL_SERVER_ERROR)
+        .json({ error: error.message });
     });
 };
 
@@ -79,10 +124,16 @@ const updateTodo = (req, res) => {
           );
           todo
             .then((result) => {
-              return res.status(statusCode.OK).json(result);
+              const data = {
+                data: result,
+                message: "Todo updated successfully",
+              };
+              return res.status(statusCode.OK).json(data);
             })
             .catch((error) => {
-              return res.status(statusCode.INTERNAL_SERVER_ERROR).json({ error: error.message });
+              return res
+                .status(statusCode.INTERNAL_SERVER_ERROR)
+                .json({ error: error.message });
             });
         } else {
           return res.status(400).json({ error: "Password is incorrect" });
@@ -92,7 +143,9 @@ const updateTodo = (req, res) => {
       }
     })
     .catch((error) => {
-      return res.status(statusCode.INTERNAL_SERVER_ERROR).json({ error: error.message });
+      return res
+        .status(statusCode.INTERNAL_SERVER_ERROR)
+        .json({ error: error.message });
     });
 };
 
@@ -112,10 +165,16 @@ const deleteTodo = (req, res) => {
           const todo = Todo.findOneAndDelete({ id: id });
           todo
             .then((result) => {
-              return res.status(statusCode.OK).json(result);
+              const data = {
+                data: result,
+                message: "Todo deleted successfully",
+              };
+              return res.status(statusCode.OK).json(data);
             })
             .catch((error) => {
-              return res.status(statusCode.INTERNAL_SERVER_ERROR).json({ error: error.message });
+              return res
+                .status(statusCode.INTERNAL_SERVER_ERROR)
+                .json({ error: error.message });
             });
         } else {
           return res.status(400).json({ error: "Password is incorrect" });
@@ -125,7 +184,9 @@ const deleteTodo = (req, res) => {
       }
     })
     .catch((error) => {
-      return res.status(statusCode.INTERNAL_SERVER_ERROR).json({ error: error.message });
+      return res
+        .status(statusCode.INTERNAL_SERVER_ERROR)
+        .json({ error: error.message });
     });
 };
 
