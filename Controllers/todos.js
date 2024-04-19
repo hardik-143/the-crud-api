@@ -38,6 +38,8 @@ const getTodos = (req, res) => {
   if (params.user) {
     todo.where({ created_by: params.user });
   }
+  let page = 1;
+  let limit = 10; // number of records per page
   if (params.max) {
     if (parseInt(params.max) > 100) {
       return res
@@ -46,8 +48,7 @@ const getTodos = (req, res) => {
     }
     todo.limit(parseInt(params.max));
   } else {
-    let page = parseInt(params.page) || 1;
-    let limit = 10; // number of records per page
+    page = parseInt(params.page) || 1;
     if(params.limit){
       if(parseInt(params.limit) > 100){
         return res
