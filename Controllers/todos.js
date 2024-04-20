@@ -159,7 +159,6 @@ const deleteTodo = (req, res) => {
   }
   todo
     .then((result) => {
-      console.log(result);
       if (result) {
         const isMatch = bcrypt.compareSync(password, result.password);
         if (isMatch) {
