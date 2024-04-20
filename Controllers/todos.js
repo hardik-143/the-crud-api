@@ -112,7 +112,7 @@ const updateTodo = (req, res) => {
   existingTodo
     .then((result) => {
       if (result) {
-        const isMatch = bcrypt.compareSync(password, result.password);
+        const isMatch = Todo.passwordMatch(password, id);
         if (isMatch) {
           const todo = Todo.findOneAndUpdate(
             {
@@ -160,7 +160,8 @@ const deleteTodo = (req, res) => {
   todo
     .then((result) => {
       if (result) {
-        const isMatch = bcrypt.compareSync(password, result.password);
+
+        const isMatch = todo.passwordMatch(password, id);
         if (isMatch) {
           const todo = Todo.findOneAndDelete({ id: id });
           todo

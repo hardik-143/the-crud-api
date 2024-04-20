@@ -43,6 +43,11 @@ todoSchema.statics.checkDuplicateTodo = async function (todo,created_by) {
     return existingTodo;
 }
 
+todoSchema.statics.passwordMatch = async function (password, id) {
+    const existingUser = await this.findOne({ id });
+    return bcrypt.compareSync(password, existingUser.password);
+}
+
 // encrypt the password before saving the user
 todoSchema.pre('save', function (next) {
     if (!this.isModified('password')) {
